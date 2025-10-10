@@ -1,11 +1,31 @@
 package arrays_and_hashing
 
 fun main() {
-    println(isAnagramBruteForce("aacc", "ccac"))
+    println(isAnagramOptimal("ate", "eat"))
+}
+
+//
+fun isAnagramOptimal(s: String, t: String): Boolean {
+    if (s.length != t.length) {
+        return false
+    }
+    val count = IntArray(26) { 0 }
+    for (ch in s) {
+        count[ch - 'a']++
+    }
+    for (ch in t) {
+        count[ch - 'a']--
+    }
+    for (value in count) {
+        if (value != 0) {
+            return false
+        }
+    }
+    return true
 }
 
 // Time O(n), Space O(n)
-fun isAnagramBruteOptimal(s: String, t: String): Boolean {
+fun isAnagramBetter(s: String, t: String): Boolean {
     if (s.length != t.length) {
         return false
     }
