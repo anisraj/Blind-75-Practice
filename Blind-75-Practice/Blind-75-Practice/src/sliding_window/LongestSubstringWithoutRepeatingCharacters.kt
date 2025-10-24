@@ -14,8 +14,8 @@ fun lengthOfLongestSubstringOptimal(s: String): Int {
     var l = 0
     var r = 0
     while (r <= s.lastIndex) {
-        if (map.containsKey(s[r])) {
-            l = max(l, map.getValue(s[r]) + 1)
+        if (map.containsKey(s[r]) && map.getValue(s[r]) >= l) {
+            l = map.getValue(s[r]) + 1
         }
         map[s[r]] = r
         longest = max(longest, (r - l + 1))
