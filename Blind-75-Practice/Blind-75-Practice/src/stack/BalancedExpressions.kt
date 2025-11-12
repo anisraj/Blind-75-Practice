@@ -14,6 +14,9 @@ private fun isBalanced(input: String): Boolean {
         if (openingBrackets.contains(ch)) {
             stack.push(ch)
         } else if (closingBrackets.contains(ch)) {
+            if (stack.isEmpty()) {
+                return false
+            }
             val lastPoppedBracket = stack.pop()
             if (openingBrackets.indexOf(lastPoppedBracket) != closingBrackets.indexOf(ch)) {
                 return false
