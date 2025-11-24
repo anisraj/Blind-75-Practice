@@ -124,6 +124,63 @@ class MyLinkedList {
         return firstPointer?.value ?: throw IllegalStateException()
     }
 
+    fun printMiddle() {
+        var middlePointer = first
+        var fastPointer = first
+        while (fastPointer != last && fastPointer?.next != last) {
+            fastPointer = fastPointer?.next?.next
+            middlePointer = middlePointer?.next
+        }
+        return if (fastPointer == last) {
+            println(middlePointer?.value)
+        } else {
+            println("${middlePointer?.value}, ${middlePointer?.next?.value}")
+        }
+    }
+
+    companion object {
+        fun createWithLoop(): MyLinkedList {
+            val list = MyLinkedList()
+            list.addLast(10)
+            list.addLast(20)
+            list.addLast(30)
+
+            val node = list.last
+
+            list.addLast(40)
+            list.addLast(50)
+
+            list.last?.next = node
+            return list
+        }
+    }
+
+    fun hasLoop(): Boolean {
+        var slow = first
+        var fast = first
+        while (fast != null && fast.next != null) {
+            slow = slow?.next
+            fast = fast.next?.next
+            if (slow == fast) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun hasLoopBruteForce(): Boolean {
+        val set = mutableSetOf<Node>()
+        var node = first
+        while (node != null) {
+            if (set.contains(node)) {
+                return true
+            }
+            set.add(node)
+            node = node.next
+        }
+        return false
+    }
+
     fun isEmpty(): Boolean {
         return first == null
     }
