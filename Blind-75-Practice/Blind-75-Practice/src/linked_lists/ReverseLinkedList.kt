@@ -19,6 +19,6 @@ private fun reverseList(head: ListNode?): ListNode? {
     return prev
 }
 
-private class ListNode(value: Int) {
+class ListNode(var `val`: Int) {
     var next: ListNode? = null
 }
