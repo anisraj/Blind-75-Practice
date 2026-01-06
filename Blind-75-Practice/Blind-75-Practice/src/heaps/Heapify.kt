@@ -37,10 +37,10 @@ private fun getMaxChildIndex(index: Int, array: IntArray): Int {
     val leftChildIndex = getLeftChildIndex(index)
     val rightChildIndex = getRightChildIndex(index)
 
-    if (leftChildIndex > array.size) {
+    if (leftChildIndex >= array.size) {
         return index
     }
-    if (rightChildIndex > array.size) {
+    if (rightChildIndex >= array.size) {
         return leftChildIndex
     }
     return if (array[leftChildIndex] > array[rightChildIndex]) {
