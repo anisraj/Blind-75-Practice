@@ -2,13 +2,9 @@ package tries
 
 fun main() {
     val trie = Trie()
-    trie.insert("car")
-    trie.insert("care")
     trie.insert("card")
-    trie.insert("careful")
-    trie.insert("egg")
-    println(trie.findWords(""))
-    println()
+    trie.insert("care")
+    println(trie.longestCommonPrefix())
 }
 
 class Trie {
@@ -34,6 +30,25 @@ class Trie {
             current = current.getChild(ch)!!
         }
         return current.isEndOfWord
+    }
+
+    fun containsRecursive(word: String): Boolean {
+        return containsRecursive(root, 0, word)
+    }
+
+    private fun containsRecursive(node: Node?, index: Int, word: String): Boolean {
+        node?.let {
+            if (index == word.length) {
+                return node.isEndOfWord
+            }
+            val ch = word[index]
+            if (!node.hasChild(ch)) {
+                return false
+            }
+            return containsRecursive(node.getChild(ch), index + 1, word)
+        } ?: run {
+            return false
+        }
     }
 
     fun traversePreOrder() {
@@ -101,12 +116,50 @@ class Trie {
         }
     }
 
+    fun countWords(): Int {
+        return countWords(root)
+    }
+
+    private fun countWords(node: Node): Int {
+        var total = 0
+        if (node.isEndOfWord) {
+            total++
+        }
+        for (child in node.getChildren()) {
+            total += countWords(child)
+        }
+        return total
+    }
+
     private fun findLastNode(prefix: String): Node? {
         var current = root
         for (ch in prefix) {
             current = current.getChild(ch) ?: return null
         }
         return current
+    }
+
+    fun longestCommonPrefix(): String {
+        val shortestWord = getShortestWord(findWords(""))
+        val stringBuilder = StringBuilder()
+        var current = root
+        var count = 0
+        while (current.getChildren().size == 1 && count < shortestWord.length) {
+            current = current.getChildren().first()
+            stringBuilder.append(current.value)
+            count++
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun getShortestWord(words: List<String>): String {
+        var shortest = words.first()
+        for (word in words) {
+            if (word.length < shortest.length) {
+                shortest = word
+            }
+        }
+        return shortest
     }
 
     private data class Node(val value: Char) {
