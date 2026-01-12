@@ -26,17 +26,16 @@ class WordSearch {
         val columns = board.first().size
         for (row in 0..<rows) {
             for (column in 0..<columns) {
-                findWord(row, column, root, "", board)
+                findWord(row, column, root, StringBuilder(""), board)
             }
         }
 
         return set.toList()
     }
 
-    private fun findWord(row: Int, column: Int, node: Node, word: String, board: Array<CharArray>) {
+    private fun findWord(row: Int, column: Int, node: Node, word: StringBuilder, board: Array<CharArray>) {
         if (node.isEndOfWord) {
-            set.add(word)
-            return
+            set.add(word.toString())
         }
         if (row < 0 ||
             column < 0 ||
@@ -47,12 +46,13 @@ class WordSearch {
             return
         }
         visited.add(Pair(row, column))
-        val newWord = word + board[row][column]
+        word.append(board[row][column])
         val nextNode = node.getChild(board[row][column])!!
-        findWord(row + 1, column, nextNode, newWord, board)
-        findWord(row - 1, column, nextNode, newWord, board)
-        findWord(row, column + 1, nextNode, newWord, board)
-        findWord(row, column - 1, nextNode, newWord, board)
+        findWord(row + 1, column, nextNode, word, board)
+        findWord(row - 1, column, nextNode, word, board)
+        findWord(row, column + 1, nextNode, word, board)
+        findWord(row, column - 1, nextNode, word, board)
+        word.deleteCharAt(word.length - 1)
         visited.remove(Pair(row, column))
     }
 
