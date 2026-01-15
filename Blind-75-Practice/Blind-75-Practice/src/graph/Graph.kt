@@ -1,24 +1,20 @@
 package graph
 
-import queues.ArrayQueue
 import java.util.Stack
 
 fun main() {
     val graph = Graph()
+    graph.addNode("P")
+    graph.addNode("X")
     graph.addNode("A")
     graph.addNode("B")
-    graph.addNode("C")
-    graph.addNode("D")
-    graph.addNode("E")
 
-    graph.addEdge("C", "A")
-    graph.addEdge("C", "B")
-    graph.addEdge("C", "D")
-    graph.addEdge("A", "B")
-    graph.addEdge("B", "E")
-    graph.addEdge("A", "E")
+    graph.addEdge("X", "A")
+    graph.addEdge("X", "B")
+    graph.addEdge("A", "P")
+    graph.addEdge("B", "P")
 
-    graph.traverseBreadthFirst("C")
+    println(graph.topologicalSort())
 
 
 }
@@ -130,6 +126,68 @@ class Graph {
                 }
             }
         }
+    }
+
+    fun topologicalSort(): List<String> {
+        val list = mutableListOf<String>()
+        val visitedNodes = mutableSetOf<Node>()
+        val stack = Stack<Node>()
+        for (node in nodes.values) {
+            topologicalSort(node, stack, visitedNodes)
+        }
+        while (stack.isNotEmpty()) {
+            list.add(stack.pop().label)
+        }
+        return list
+    }
+
+    private fun topologicalSort(node: Node, stack: Stack<Node>, visitedNodes: MutableSet<Node>) {
+        if (visitedNodes.contains(node)) {
+            return
+        }
+        visitedNodes.add(node)
+        adjacencyList.getValue(node).forEach {
+            if (!visitedNodes.contains(it)) {
+                topologicalSort(it, stack, visitedNodes)
+            }
+        }
+        stack.push(node)
+    }
+
+    fun hasCycle(): Boolean {
+        val all = mutableSetOf<Node>()
+        all.addAll(nodes.values)
+
+        val visitingNodes = mutableSetOf<Node>()
+        val visitedNodes = mutableSetOf<Node>()
+
+        while (all.isNotEmpty()) {
+            val current = all.iterator().next()
+            if (hasCycle(current, all, visitingNodes, visitedNodes)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun hasCycle(node: Node, allNodes: MutableSet<Node>, visitingNodes: MutableSet<Node>, visitedNodes: MutableSet<Node>): Boolean {
+        allNodes.remove(node)
+        visitedNodes.add(node)
+        for (neighbour in adjacencyList.getValue(node)) {
+            if (visitedNodes.contains(neighbour)) {
+                continue
+            }
+            if (visitingNodes.contains(neighbour)) {
+                return true
+            }
+            if (hasCycle(neighbour, allNodes, visitingNodes, visitedNodes)) {
+                return true
+            }
+        }
+
+        visitingNodes.remove(node)
+        visitedNodes.add(node)
+        return false
     }
 
     override fun toString(): String {
